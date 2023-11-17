@@ -1,7 +1,6 @@
 {
     "private": true,
     "scripts": {
-        "build:styles": "postcss resources/css/index.css -o resources/dist/password-for-filament.css --postcss --minify && npm run purge",
         "dev": "npm-run-all --parallel dev:*",
         "build": "npm-run-all build:*"
     },

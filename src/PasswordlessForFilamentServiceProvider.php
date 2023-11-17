@@ -16,8 +16,6 @@ class PasswordlessForFilamentServiceProvider extends PackageServiceProvider
 {
     public static string $name = 'passwordless-for-filament';
 
-    public static string $viewNamespace = 'passwordless-for-filament';
-
     public function configurePackage(Package $package): void
     {
         /*
@@ -27,28 +25,10 @@ class PasswordlessForFilamentServiceProvider extends PackageServiceProvider
          */
         $package
             ->name(static::$name)
-            ->hasConfigFile()
+            ->hasConfigFile() // php artisan vendor:publish --tag=your-package-name-config
             ->hasRoute('web')
-            ->hasTranslations()
-            ->hasViews();
-
-        $configFileName = $package->shortName();
-
-        if (file_exists($package->basePath("/../config/{$configFileName}.php"))) {
-            $package->hasConfigFile();
-        }
-
-        if (file_exists($package->basePath('/../database/migrations'))) {
-            $package->hasMigrations($this->getMigrations());
-        }
-
-        if (file_exists($package->basePath('/../resources/lang'))) {
-            $package->hasTranslations();
-        }
-
-        if (file_exists($package->basePath('/../resources/views'))) {
-            $package->hasViews(static::$viewNamespace);
-        }
+            ->hasTranslations() // php artisan vendor:publish --tag=your-package-name-translations
+            ->hasViews(); // php artisan vendor:publish --tag=your-package-name-views
     }
 
     public function packageBooted(): void
@@ -58,35 +38,5 @@ class PasswordlessForFilamentServiceProvider extends PackageServiceProvider
         $className = class_basename(Login::class);
         $alias = strtolower($className); // Converts 'Login' to 'login', or you can format it as needed
         Livewire::component($alias, Login::class);
-
-        // Asset Registration
-        FilamentAsset::register(
-            $this->getAssets(),
-            $this->getAssetPackageName()
-        );
-    }
-
-    protected function getAssetPackageName(): ?string
-    {
-        return 'passwordless-for-filament';
-    }
-
-    /**
-     * @return array<Asset>
-     */
-    protected function getAssets(): array
-    {
-        return [
-            // AlpineComponent::make('passwordless-for-filament', __DIR__ . '/../resources/dist/components/passwordless-for-filament.js'),
-            Css::make('passwordless-for-filament-styles', __DIR__ . '/../resources/dist/passwordless-for-filament.css'),
-        ];
-    }
-
-    /**
-     * @return array<string>
-     */
-    protected function getRoutes(): array
-    {
-        return [];
     }
 }
